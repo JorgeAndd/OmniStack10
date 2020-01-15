@@ -10,7 +10,7 @@ const routes = Router();
 //         Body: request.body (data for creation or change of a registry)     
 
 routes.post('/devs', async (request, response) => {
-    const { github_username, skills } = request.body;
+    const { github_username, skills, latitude, longitude } = request.body;
 
     const githubResponse = await axios.get(`https://api.github.com/users/${github_username}`);
 
@@ -20,12 +20,18 @@ routes.post('/devs', async (request, response) => {
 
     const skillsArray = skills.split(',').map(skill => skill.trim());
 
+    const location = {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+    }
+
     const newDev = await Dev.create({
         github_username,
         name,
         avatar_url,
         bio,
-        skills: skillsArray
+        skills: skillsArray,
+        location
     });
 
     return response.json(newDev);
