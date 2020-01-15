@@ -1,7 +1,14 @@
 const axios = require('axios');
 const Dev = require('../models/dev');
+const parseStringAsArray = require('../utils/parseStringAsArray');
 
 module.exports = {
+    async index(request, response) {
+        const devs = await Dev.find();
+
+        return response.json(devs);
+    },
+
     async store(request, response) {
         const { github_username, skills, latitude, longitude } = request.body;
 
@@ -16,7 +23,7 @@ module.exports = {
         const avatar_url = githubResponse.data.avatar_url;
         const bio = githubResponse.data.bio || '';
 
-        const skillsArray = skills.split(',').map(skill => skill.trim());
+        const skillsArray = parseStringAsArray(skills);
 
         const location = {
             type: 'Point',
