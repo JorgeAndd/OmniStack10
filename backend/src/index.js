@@ -20,6 +20,7 @@ mongoose.connection.on('error', () => {
     console.log('[Error] Mongoose could not connect to ' + mongoUri);
 });
 
+
 app.use(express.json());
 app.use(routes);
 
