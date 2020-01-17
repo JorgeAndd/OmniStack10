@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import api from './services/api';
 
 import './global.css';
 import './App.css';
@@ -6,6 +7,8 @@ import './Sidebar.css';
 import './Main.css';
 
 function App() {
+  const [devs, setDevs] = useState([]);
+
   const [github_username, setGithubusername] = useState('');
   const [skills, setSkills] = useState('');
 
@@ -30,15 +33,38 @@ function App() {
     );
   }, []);
 
+  useEffect(() => {
+    async function loadDevs() {
+      const response = await api.get('/devs');
+
+      setDevs(response.data);
+    }
+
+    loadDevs();
+  }, []);
+
   async function handleAddDev(e) {
     e.preventDefault();
+
+    const response = await api.post('/devs', {
+      github_username,
+      skills,
+      latitude,
+      longitude,
+    });
+
+    setGithubusername('');
+    setSkills('');
+
+    let newDevs = [...devs, response.data];
+    setDevs(newDevs);
   }
 
   return (
     <div id="app">
       <aside>
         <strong>Cadastrar</strong>
-        <form>
+        <form onSubmit={handleAddDev}>
           <div className="input-block">
             <label htmlFor="github_username">Github User</label>
             <input
@@ -66,6 +92,7 @@ function App() {
               <label htmlFor="latitude">Latitude</label>
               <input
                 type="number"
+                step="any"
                 name="latitude"
                 id="latitude"
                 required
@@ -78,6 +105,7 @@ function App() {
               <label htmlFor="longitude">Longitude</label>
               <input
                 type="number"
+                step="any"
                 name="longitude"
                 id="longitude"
                 required
@@ -93,61 +121,21 @@ function App() {
 
       <main>
         <ul>
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/5915194?s=460&v=4" alt="Jorge Andrade" />
-              <div className="user-info">
-                <strong>Jorge Andrade</strong>
-                <span>C#, Javascript, React</span>
-              </div>
-            </header>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ante diam, semper eget nulla sed, mattis venenatis ante.
-            </p>
-            <a href="https://github.com/JorgeAndd">Access Github profile</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/5915194?s=460&v=4" alt="Jorge Andrade" />
-              <div className="user-info">
-                <strong>Jorge Andrade</strong>
-                <span>C#, Javascript, React</span>
-              </div>
-            </header>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ante diam, semper eget nulla sed, mattis venenatis ante.
-            </p>
-            <a href="https://github.com/JorgeAndd">Access Github profile</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/5915194?s=460&v=4" alt="Jorge Andrade" />
-              <div className="user-info">
-                <strong>Jorge Andrade</strong>
-                <span>C#, Javascript, React</span>
-              </div>
-            </header>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ante diam, semper eget nulla sed, mattis venenatis ante.
-            </p>
-            <a href="https://github.com/JorgeAndd">Access Github profile</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/5915194?s=460&v=4" alt="Jorge Andrade" />
-              <div className="user-info">
-                <strong>Jorge Andrade</strong>
-                <span>C#, Javascript, React</span>
-              </div>
-            </header>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ante diam, semper eget nulla sed, mattis venenatis ante.
-            </p>
-            <a href="https://github.com/JorgeAndd">Access Github profile</a>
-          </li>
+          {devs.map(dev => (
+            <li key={dev._id} className="dev-item">
+              <header>
+                <img src={dev.avatar_url} alt="Jorge Andrade" />
+                <div className="user-info">
+                  <strong>{dev.name}</strong>
+                  <span>{dev.skills.join(', ')}</span>
+                </div>
+              </header>
+              <p>
+                {dev.bio}
+              </p>
+              <a href={`https://github.com/${dev.github_username}`}>Access Github profile</a>
+            </li>
+          ))}
         </ul>
       </main>
     </div >

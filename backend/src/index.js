@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const routes = require('./routes');
 
@@ -20,7 +21,7 @@ mongoose.connection.on('error', () => {
     console.log('[Error] Mongoose could not connect to ' + mongoUri);
 });
 
-app.use(cors({ origin: 'http://localhost:3000/' }));
+app.use(cors());
 app.use(express.json());
 app.use(routes);
 
