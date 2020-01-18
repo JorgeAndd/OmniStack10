@@ -37,6 +37,20 @@ function Main(props) {
 
     return (
         <>
+            <View style={styles.searchForm}>
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder='Search devs by skill...'
+                    placeholderTextColor='#999'
+                    autoCapitalize='words'
+                    autoCorrect={false}
+                />
+
+                <TouchableOpacity onPress={() => { }} style={styles.loadButton}>
+                    <MaterialIcons name='my-location' size={20} color='#FFF' />
+                </TouchableOpacity>
+            </View>
+
             <MapView initialRegion={currentRegion} style={styles.map}>
                 <Marker coordinate={{ latitude: -15.7541464, longitude: -47.9001824 }}>
                     <Image style={styles.avatar} source={{ uri: "https://avatars1.githubusercontent.com/u/5915194?s=460&v=4" }} />
@@ -52,19 +66,6 @@ function Main(props) {
                     </Callout>
                 </Marker>
             </MapView>
-            <View style={styles.searchForm}>
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder='Search devs by skill...'
-                    placeholderTextColor='#999'
-                    autoCapitalize='words'
-                    autoCorrect={false}
-                />
-
-                <TouchableOpacity onPress={() => { }} style={styles.loadButton}>
-                    <MaterialIcons name='my-location' size={20} color='#FFF' />
-                </TouchableOpacity>
-            </View>
         </>
     );
 }
@@ -96,10 +97,10 @@ const styles = StyleSheet.create({
 
     },
     searchForm: {
+        backgroundColor: '#7D40E7',
         position: 'absolute',
-        top: 20,
-        left: 20,
-        right: 20,
+        paddingHorizontal: 10,
+        paddingBottom: 5,
         zIndex: 5,
         flexDirection: 'row',
     },
